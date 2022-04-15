@@ -7,22 +7,21 @@ function App() {
   const [movies, setMovies] = useState([]);
 
   // fetch() and then() Asyncronous Javascript functions. fetch() returns a promise and then() acts on that promise.
-  const fetchMoviesHandler = () => {
-    fetch("https://swapi.dev/api/films/")
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        const moviesDTO = data.results.map((movieData) => {
-          return {
-            id: movieData.episode_id,
-            title: movieData.title,
-            openingText: movieData.opening_crawl,
-            releaseDate: movieData.release_date,
-          };
-        });
-        setMovies(moviesDTO);
-      });
+  // async and await are JUST another way of writing asyncronous function calls.
+  const fetchMoviesHandler = async () => {
+    const response = await fetch("https://swapi.dev/api/films/");
+    const data = await response.json(); // Since 'response' is a promise, not the actual data.
+
+    const moviesDTO = data.results.map((movieData) => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        openingText: movieData.opening_crawl,
+        releaseDate: movieData.release_date,
+      };
+    });
+
+    setMovies(moviesDTO);
   };
 
   return (
