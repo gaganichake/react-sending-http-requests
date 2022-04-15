@@ -6,24 +6,34 @@ import "./App.css";
 function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // fetch() and then() Asyncronous Javascript functions. fetch() returns a promise and then() acts on that promise.
   // async and await are JUST another way of writing asyncronous function calls.
   const fetchMoviesHandler = async () => {
     setIsLoading(true);
-    const response = await fetch("https://swapi.dev/api/films/");
-    const data = await response.json(); // Since 'response' is a promise, not the actual data.
+    setError(null);
+    try {
+      const response = await fetch("https://swapi.dev/api/films/");
+      if(!response.ok) {
+        throw new Error('Something went wrong!');
+      }
 
-    const moviesDTO = data.results.map((movieData) => {
-      return {
-        id: movieData.episode_id,
-        title: movieData.title,
-        openingText: movieData.opening_crawl,
-        releaseDate: movieData.release_date,
-      };
-    });
-
-    setMovies(moviesDTO);
+      const data = await response.json(); // Since 'response' is a promise, not the actual data.
+      
+      const moviesDTO = data.results.map((movieData) => {
+        return {
+          id: movieData.episode_id,
+          title: movieData.title,
+          openingText: movieData.opening_crawl,
+          releaseDate: movieData.release_date,
+        };
+      });
+  
+      setMovies(moviesDTO);
+    } catch(error) {
+      setError(error.message);
+    }
     setIsLoading(false);
   };
 
@@ -34,8 +44,9 @@ function App() {
       </section>
       <section>
         {!isLoading && <MoviesList movies={movies} />}
-        {!isLoading && movies.length === 0 && 'No movies to display. Click Fetch Movies'}
+        {!isLoading && !error && movies.length === 0 && 'No movies to display. Click Fetch Movies'}
         {isLoading && <p>Loading...</p>}
+        {!isLoading && error && <p>{error}</p>}
       </section>
     </React.Fragment>
   );
