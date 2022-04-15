@@ -15,7 +15,7 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://swapi.dev/api/films/");
+      const response = await fetch("http://localhost:8080/movies"); // also try https://swapi.dev/api/films/
       if(!response.ok) {
         throw new Error('Something went wrong!');
       }
@@ -42,8 +42,17 @@ function App() {
     fetchMoviesHandler();
   }, [fetchMoviesHandler]);
 
-  function addMovieHandler(movie) {
+  async function addMovieHandler(movie) {
     console.log(movie);
+    const response = await fetch('http://localhost:8080/movies', {
+      method: 'POST',
+      body: JSON.stringify({title: movie.title, opening_crawl: movie.openingText, release_date: movie.releaseDate}),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const data = await response.json();
+    console.log(data);
   }
 
   let content = <p>No movies to display. Click Fetch Movies</p>;
