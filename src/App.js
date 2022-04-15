@@ -5,10 +5,12 @@ import "./App.css";
 
 function App() {
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // fetch() and then() Asyncronous Javascript functions. fetch() returns a promise and then() acts on that promise.
   // async and await are JUST another way of writing asyncronous function calls.
   const fetchMoviesHandler = async () => {
+    setIsLoading(true);
     const response = await fetch("https://swapi.dev/api/films/");
     const data = await response.json(); // Since 'response' is a promise, not the actual data.
 
@@ -22,6 +24,7 @@ function App() {
     });
 
     setMovies(moviesDTO);
+    setIsLoading(false);
   };
 
   return (
@@ -30,7 +33,8 @@ function App() {
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>
-        <MoviesList movies={movies} />
+        {!isLoading && <MoviesList movies={movies} />}
+        {!isLoading && movies.length === 0 && 'No movies to display. Click Fetch Movies'}
       </section>
     </React.Fragment>
   );
