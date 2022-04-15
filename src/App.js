@@ -6,6 +6,7 @@ import "./App.css";
 function App() {
   const [movies, setMovies] = useState([]);
 
+  // fetch() and then() Asyncronous Javascript functions. fetch() returns a promise and then() acts on that promise.
   const fetchMoviesHandler = () => {
     fetch("https://swapi.dev/api/films/")
       .then((response) => {
